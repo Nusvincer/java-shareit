@@ -38,12 +38,10 @@ class UserControllerTest {
 
     @Test
     void createUser_ShouldReturn201() throws Exception {
-        String userJson = """
-            {
-              "name": "nusvincer",
-              "email": "nusvincer@gmail.com"
-            }
-            """;
+        String userJson = "{"
+                + "\"name\": \"nusvincer\","
+                + "\"email\": \"nusvincer@gmail.com\""
+                + "}";
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
