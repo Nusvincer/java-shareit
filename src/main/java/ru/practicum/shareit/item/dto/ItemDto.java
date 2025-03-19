@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -10,15 +11,10 @@ import ru.practicum.shareit.user.dto.UserDto;
 @ToString
 public class ItemDto {
     private Long id;
+
+    @NotBlank(message = "Название предмета не должно быть пустым")
     private String name;
     private String description;
     private Boolean available;
     private UserDto owner;
-
-    public ItemDto(Long id, String name, String description, Boolean available) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 }

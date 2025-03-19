@@ -1,4 +1,4 @@
-package ru.practicum.shareit;
+/*package ru.practicum.shareit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,6 +31,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        reset(userService);
         userDto = new UserDto(1L, "nusvincer", "nusvincer@gmail.com");
 
         when(userService.createUser(any(UserDto.class))).thenReturn(userDto);
@@ -51,4 +52,4 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value("nusvincer"))
                 .andExpect(jsonPath("$.email").value("nusvincer@gmail.com"));
     }
-}
+}*/

@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
 public class ItemMapper {
@@ -15,13 +16,13 @@ public class ItemMapper {
         );
     }
 
-    public static Item toEntity(ItemDto dto) {
+    public static Item toEntity(ItemDto dto, User owner) {
         return new Item(
                 dto.getId(),
                 dto.getName(),
                 dto.getDescription(),
                 dto.getAvailable(),
-                null
+                owner
         );
     }
 }

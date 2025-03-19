@@ -1,8 +1,11 @@
 package ru.practicum.shareit.item;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
@@ -14,7 +17,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto itemDto,
+    public ResponseEntity<ItemDto> createItem(@Valid @RequestBody ItemDto itemDto,
                                               @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         return ResponseEntity.ok(itemService.createItem(itemDto, ownerId));
     }
@@ -35,8 +38,13 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ItemDto> updateItem(@PathVariable Long id, @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(itemService.updateItem(id, itemDto));
+    public ResponseEntity<ItemDto> updateItem(@PathVariable Long id,
+                                              @RequestBody ItemDto itemDto,
+                                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
+        if (ownerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Header X-Sharer-User-Id is required");
+        }
+        return ResponseEntity.ok(itemService.updateItem(id, itemDto, ownerId));
     }
 
     @DeleteMapping("/{id}")
