@@ -8,6 +8,6 @@ public class UserMapper {
     }
 
     public static User toEntity(UserDto dto) {
-        return new User(dto.getId(), dto.getEmail(), dto.getName());
+        return new User(dto.getId(), dto.getName(), dto.getEmail());
     }
 }
