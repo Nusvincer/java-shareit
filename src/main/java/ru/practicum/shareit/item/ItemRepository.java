@@ -11,8 +11,6 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByOwner(User owner);
 
-    List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableTrue(String name, String description);
-
     @Query("SELECT i FROM Item i JOIN FETCH i.owner")
     List<Item> findAllWithOwners();
 
