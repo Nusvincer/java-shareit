@@ -12,7 +12,7 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                UserMapper.toDto(item.getOwner())
+                item.getOwner() != null ? item.getOwner().getId() : null
         );
     }
 

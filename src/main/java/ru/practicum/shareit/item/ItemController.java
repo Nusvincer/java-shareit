@@ -28,8 +28,8 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> getAllItems() {
-        return ResponseEntity.ok(itemService.getAllItems());
+    public ResponseEntity<List<ItemDto>> getAllItems(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        return ResponseEntity.ok(itemService.getItemsByOwner(ownerId));
     }
 
     @GetMapping("/search")
@@ -51,5 +51,10 @@ public class ItemController {
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/owner")
+    public ResponseEntity<List<ItemDto>> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        return ResponseEntity.ok(itemService.getItemsByOwner(ownerId));
     }
 }
