@@ -1,12 +1,30 @@
 package ru.practicum.shareit.booking;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.dto.BookingDto;
 
-/**
- * TODO Sprint add-bookings.
- */
+import java.util.List;
+
 @RestController
-@RequestMapping(path = "/bookings")
+@RequestMapping("/bookings")
+@RequiredArgsConstructor
 public class BookingController {
+    private final BookingService bookingService;
+
+    @PostMapping
+    public ResponseEntity<BookingDto> createBooking(@RequestBody BookingDto bookingDto) {
+        return ResponseEntity.ok(bookingService.createBooking(bookingDto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDto> getBookingById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getBookingById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<BookingDto>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
 }
