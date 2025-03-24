@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BookingService {
 
-    BookingDto getBookingById(Long id);
+    BookingDto getBookingById(Long id, Long userId);
 
     List<BookingDto> getAllBookings();
 

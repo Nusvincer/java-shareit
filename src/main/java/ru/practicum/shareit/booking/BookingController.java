@@ -23,8 +23,11 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDto> getBookingById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookingService.getBookingById(id));
+    public ResponseEntity<BookingDto> getBookingById(
+            @PathVariable Long id,
+            @RequestHeader("X-Sharer-User-Id") Long userId
+    ) {
+        return ResponseEntity.ok(bookingService.getBookingById(id, userId));
     }
 
     @PatchMapping("/{bookingId}")

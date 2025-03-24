@@ -48,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (item.getOwner().getId().equals(userId)) {
-            throw new NotFoundException("Owner cannot book their own item.");
+            throw new ValidationException("Owner cannot book their own item.");
         }
 
         User booker = userRepository.findById(userId)
@@ -65,10 +65,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto getBookingById(Long id) {
-        return bookingRepository.findById(id)
-                .map(BookingMapper::toDto)
+    public BookingDto getBookingById(Long id, Long userId) {
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
+
+        Long bookerId = booking.getBooker().getId();
+        Long ownerId = booking.getItem().getOwner().getId();
+
+        if (!bookerId.equals(userId) && !ownerId.equals(userId)) {
+            throw new NotFoundException("Access denied: not booker or owner");
+        }
+
+        return BookingMapper.toDto(booking);
     }
 
     @Override
