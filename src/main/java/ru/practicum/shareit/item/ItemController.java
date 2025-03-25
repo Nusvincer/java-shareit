@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDto> getItemById(@PathVariable Long id) {
-        return ResponseEntity.ok(itemService.getItemById(id));
+    public ResponseEntity<ItemDto> getItemById(@PathVariable Long id,
+                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return ResponseEntity.ok(itemService.getItemById(id, userId));
     }
 
     @GetMapping
@@ -56,5 +58,12 @@ public class ItemController {
     @GetMapping("/owner")
     public ResponseEntity<List<ItemDto>> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
         return ResponseEntity.ok(itemService.getItemsByOwner(ownerId));
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public ResponseEntity<CommentDto> addComment(@PathVariable Long itemId,
+                                                 @RequestHeader("X-Sharer-User-Id") Long userId,
+                                                 @RequestBody CommentDto commentDto) {
+        return ResponseEntity.ok(itemService.addComment(itemId, userId, commentDto.getText()));
     }
 }
