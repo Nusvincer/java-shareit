@@ -17,7 +17,7 @@ public class UserClient {
     private final RestTemplate restTemplate;
     private final String serverUrl;
 
-    public UserClient(@Value("${shareit-server.url}") String serverUrl) {
+    public UserClient(@Value("${SHAREIT_SERVER_URL:http://localhost:9090}") String serverUrl) {
         this.serverUrl = serverUrl + "/users";
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -51,4 +51,3 @@ public class UserClient {
         return ResponseEntity.noContent().build();
     }
 }
-

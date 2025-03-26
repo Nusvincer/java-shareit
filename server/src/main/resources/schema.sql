@@ -4,6 +4,14 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) UNIQUE NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS item_requests (
+    id BIGSERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
+    created TIMESTAMP NOT NULL,
+    requestor_id BIGINT NOT NULL,
+    FOREIGN KEY (requestor_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS items (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -24,14 +32,6 @@ CREATE TABLE IF NOT EXISTS bookings (
     status VARCHAR(50) NOT NULL,
     FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE,
     FOREIGN KEY (booker_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS item_requests (
-    id BIGSERIAL PRIMARY KEY,
-    description VARCHAR(255) NOT NULL,
-    created TIMESTAMP NOT NULL,
-    requestor_id BIGINT NOT NULL,
-    FOREIGN KEY (requestor_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comments (

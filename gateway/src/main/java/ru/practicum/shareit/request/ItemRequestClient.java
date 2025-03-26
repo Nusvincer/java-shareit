@@ -12,7 +12,7 @@ public class ItemRequestClient extends BaseClient {
 
     private static final String API_PREFIX = "/requests";
 
-    public ItemRequestClient(@Value("${shareit-server.url}") String serverUrl) {
+    public ItemRequestClient(@Value("${SHAREIT_SERVER_URL:http://localhost:9090}") String serverUrl) {
         super(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
     }
 

@@ -14,7 +14,7 @@ public class BookingClient extends BaseClient {
 
     private static final String API_PREFIX = "/bookings";
 
-    public BookingClient(@Value("${shareit-server.url}") String serverUrl) {
+    public BookingClient(@Value("${SHAREIT_SERVER_URL:http://localhost:9090}") String serverUrl) {
         super(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
     }
 

@@ -15,7 +15,7 @@ public class ItemClient extends BaseClient {
 
     private static final String API_PREFIX = "/items";
 
-    public ItemClient(@Value("${shareit-server.url}") String serverUrl) {
+    public ItemClient(@Value("${SHAREIT_SERVER_URL:http://localhost:9090}") String serverUrl) {
         super(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
     }
 
@@ -47,4 +47,3 @@ public class ItemClient extends BaseClient {
         return delete("/" + itemId, userId);
     }
 }
-
