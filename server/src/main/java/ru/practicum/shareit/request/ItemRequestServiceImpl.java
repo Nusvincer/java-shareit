@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestWithItemsDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
+    private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -33,24 +37,41 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto getRequestById(Long id) {
-        return itemRequestRepository.findById(id)
-                .map(ItemRequestMapper::toDto)
+    public ItemRequestWithItemsDto getRequestById(Long requestId, Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        ItemRequest request = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Request not found"));
+
+        List<Item> items = itemRepository.findAllByRequestId(requestId);
+        return ItemRequestMapper.toDtoWithItems(request, items);
     }
 
     @Override
-    public List<ItemRequestDto> getAllRequests() {
-        return itemRequestRepository.findAll().stream()
-                .map(ItemRequestMapper::toDto)
+    public List<ItemRequestWithItemsDto> getAllRequests(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        return itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId).stream()
+                .map(request -> {
+                    List<Item> items = itemRepository.findAllByRequestId(request.getId());
+                    return ItemRequestMapper.toDtoWithItems(request, items);
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemRequestDto> getRequestsOfOtherUsers(Long userId) {
+    public List<ItemRequestWithItemsDto> getRequestsOfOtherUsers(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         return itemRequestRepository.findAll().stream()
-                .filter(req -> !req.getRequester().getId().equals(userId))
-                .map(ItemRequestMapper::toDto)
+                .filter(request -> !request.getRequester().getId().equals(userId))
+                .map(request -> {
+                    List<Item> items = itemRepository.findAllByRequestId(request.getId());
+                    return ItemRequestMapper.toDtoWithItems(request, items);
+                })
                 .collect(Collectors.toList());
     }
 }

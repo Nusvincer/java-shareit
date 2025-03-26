@@ -1,6 +1,11 @@
 package ru.practicum.shareit.client;
 
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -13,52 +18,75 @@ public class BaseClient {
     public BaseClient(DefaultUriBuilderFactory uriBuilderFactory) {
         this.rest = new RestTemplate();
         this.rest.setUriTemplateHandler(uriBuilderFactory);
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        this.rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
     }
 
     protected <T> ResponseEntity<Object> post(String path, long userId, T body) {
-        return rest.exchange(
-                path,
-                HttpMethod.POST,
-                new HttpEntity<>(body, defaultHeaders(userId)),
-                Object.class
-        );
+        try {
+            return rest.exchange(
+                    path,
+                    HttpMethod.POST,
+                    new HttpEntity<>(body, defaultHeaders(userId)),
+                    Object.class
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
     }
 
     protected <T> ResponseEntity<Object> patch(String path, long userId, T body) {
-        return rest.exchange(
-                path,
-                HttpMethod.PATCH,
-                new HttpEntity<>(body, defaultHeaders(userId)),
-                Object.class
-        );
+        try {
+            return rest.exchange(
+                    path,
+                    HttpMethod.PATCH,
+                    new HttpEntity<>(body, defaultHeaders(userId)),
+                    Object.class
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
     }
 
     protected ResponseEntity<Object> get(String path, long userId) {
-        return rest.exchange(
-                path,
-                HttpMethod.GET,
-                new HttpEntity<>(defaultHeaders(userId)),
-                Object.class
-        );
+        try {
+            return rest.exchange(
+                    path,
+                    HttpMethod.GET,
+                    new HttpEntity<>(defaultHeaders(userId)),
+                    Object.class
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
     }
 
     protected ResponseEntity<Object> get(String path, long userId, Map<String, Object> params) {
-        return rest.exchange(
-                path,
-                HttpMethod.GET,
-                new HttpEntity<>(defaultHeaders(userId)),
-                Object.class,
-                params
-        );
+        try {
+            return rest.exchange(
+                    path,
+                    HttpMethod.GET,
+                    new HttpEntity<>(defaultHeaders(userId)),
+                    Object.class,
+                    params
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
     }
 
     protected ResponseEntity<Object> delete(String path, long userId) {
-        return rest.exchange(
-                path,
-                HttpMethod.DELETE,
-                new HttpEntity<>(defaultHeaders(userId)),
-                Object.class
-        );
+        try {
+            return rest.exchange(
+                    path,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(defaultHeaders(userId)),
+                    Object.class
+            );
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
     }
 
     private HttpHeaders defaultHeaders(long userId) {
@@ -68,4 +96,3 @@ public class BaseClient {
         return headers;
     }
 }
-

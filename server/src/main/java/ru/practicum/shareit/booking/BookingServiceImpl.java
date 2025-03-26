@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("Item not found"));
 
         if (!item.getAvailable()) {
-            throw new ValidationException("Item is not available for booking");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Item is not available for booking");
         }
 
         if (item.getOwner().getId().equals(userId)) {
