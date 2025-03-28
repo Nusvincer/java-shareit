@@ -99,7 +99,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         if (booking.getStatus() != BookingStatus.WAITING) {
-            throw new IllegalStateException("Booking already approved or rejected.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking already approved or rejected.");
         }
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);

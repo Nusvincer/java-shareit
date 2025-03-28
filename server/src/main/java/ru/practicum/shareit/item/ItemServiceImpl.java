@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -164,7 +165,7 @@ public class ItemServiceImpl implements ItemService {
                 .anyMatch(booking -> booking.getStatus() == ru.practicum.shareit.booking.BookingStatus.APPROVED);
 
         if (!hasBooking) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has not completed booking of this item");
+            throw new ValidationException("User has not completed booking of this item");
         }
 
         Comment comment = new Comment();

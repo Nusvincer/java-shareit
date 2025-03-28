@@ -16,26 +16,25 @@ public class BaseClient {
     protected final RestTemplate rest;
 
     public BaseClient(DefaultUriBuilderFactory uriBuilderFactory) {
-        this.rest = new RestTemplate();
+        this.rest = createRestTemplate();
         this.rest.setUriTemplateHandler(uriBuilderFactory);
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        this.rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
     }
 
     public BaseClient(DefaultUriBuilderFactory uriBuilderFactory, RestTemplate restTemplate) {
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault()));
+        restTemplate.setUriTemplateHandler(uriBuilderFactory);
         this.rest = restTemplate;
-        this.rest.setUriTemplateHandler(uriBuilderFactory);
+    }
+
+    private RestTemplate createRestTemplate() {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+        return new RestTemplate(requestFactory);
     }
 
     protected <T> ResponseEntity<Object> post(String path, long userId, T body) {
         try {
-            return rest.exchange(
-                    path,
-                    HttpMethod.POST,
-                    new HttpEntity<>(body, defaultHeaders(userId)),
-                    Object.class
-            );
+            return rest.exchange(path, HttpMethod.POST, new HttpEntity<>(body, defaultHeaders(userId)), Object.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -43,12 +42,7 @@ public class BaseClient {
 
     protected <T> ResponseEntity<Object> patch(String path, long userId, T body) {
         try {
-            return rest.exchange(
-                    path,
-                    HttpMethod.PATCH,
-                    new HttpEntity<>(body, defaultHeaders(userId)),
-                    Object.class
-            );
+            return rest.exchange(path, HttpMethod.PATCH, new HttpEntity<>(body, defaultHeaders(userId)), Object.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -56,12 +50,7 @@ public class BaseClient {
 
     protected ResponseEntity<Object> get(String path, long userId) {
         try {
-            return rest.exchange(
-                    path,
-                    HttpMethod.GET,
-                    new HttpEntity<>(defaultHeaders(userId)),
-                    Object.class
-            );
+            return rest.exchange(path, HttpMethod.GET, new HttpEntity<>(defaultHeaders(userId)), Object.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -69,12 +58,7 @@ public class BaseClient {
 
     protected ResponseEntity<Object> get(String path, long userId, Map<String, Object> params) {
         try {
-            return rest.exchange(
-                    path + buildQueryString(params),
-                    HttpMethod.GET,
-                    new HttpEntity<>(defaultHeaders(userId)),
-                    Object.class
-            );
+            return rest.exchange(path + buildQueryString(params), HttpMethod.GET, new HttpEntity<>(defaultHeaders(userId)), Object.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -82,26 +66,17 @@ public class BaseClient {
 
     protected ResponseEntity<Object> delete(String path, long userId) {
         try {
-            return rest.exchange(
-                    path,
-                    HttpMethod.DELETE,
-                    new HttpEntity<>(defaultHeaders(userId)),
-                    Object.class
-            );
+            return rest.exchange(path, HttpMethod.DELETE, new HttpEntity<>(defaultHeaders(userId)), Object.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
     private String buildQueryString(Map<String, Object> params) {
-        if (params.isEmpty()) {
-            return "";
-        }
+        if (params.isEmpty()) return "";
         StringBuilder query = new StringBuilder("?");
         params.forEach((key, value) -> {
-            if (query.length() > 1) {
-                query.append("&");
-            }
+            if (query.length() > 1) query.append("&");
             query.append(key).append("=").append(value);
         });
         return query.toString();
