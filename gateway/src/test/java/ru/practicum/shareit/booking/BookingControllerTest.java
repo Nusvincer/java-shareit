@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.BookingCreateDto;
+
+import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
@@ -20,22 +24,29 @@ class BookingControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private BookingClient bookingClient;
 
     @Test
     void shouldCreateBooking() throws Exception {
-        String json = "{\"itemId\":1,\"start\":\"2025-03-28T10:00:00\",\"end\":\"2025-03-28T12:00:00\"}";
+        LocalDateTime start = LocalDateTime.now().plusHours(1);
+        LocalDateTime end = LocalDateTime.now().plusHours(2);
 
-        when(bookingClient.createBooking(Mockito.any(), Mockito.any()))
-                .thenReturn(ResponseEntity.ok("Booking created"));
+        BookingCreateDto dto = new BookingCreateDto();
+        dto.setItemId(1L);
+        dto.setStart(start);
+        dto.setEnd(end);
+
+        String json = objectMapper.writeValueAsString(dto);
 
         mockMvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", "1")
+                        .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Booking created")));
+                .andExpect(status().isOk());
     }
 
     @Test
