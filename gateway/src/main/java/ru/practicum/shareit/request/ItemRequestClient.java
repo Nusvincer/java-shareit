@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -14,6 +15,10 @@ public class ItemRequestClient extends BaseClient {
 
     public ItemRequestClient(@Value("${SHAREIT_SERVER_URL:http://localhost:9090}") String serverUrl) {
         super(new DefaultUriBuilderFactory(serverUrl + API_PREFIX));
+    }
+
+    public ItemRequestClient(DefaultUriBuilderFactory uriBuilderFactory, RestTemplate restTemplate) {
+        super(uriBuilderFactory, restTemplate);
     }
 
     public ResponseEntity<Object> createRequest(Long userId, ItemRequestDto requestDto) {
