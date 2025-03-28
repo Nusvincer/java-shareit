@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 
 import java.util.Map;
 
-@Component
 public class BookingClient extends BaseClient {
 
     private static final String API_PREFIX = "/bookings";
