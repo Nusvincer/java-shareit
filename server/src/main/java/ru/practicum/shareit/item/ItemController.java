@@ -16,32 +16,32 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                              @RequestBody ItemDto itemDto) {
-        return ResponseEntity.ok(itemService.createItem(itemDto, ownerId));
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+                              @RequestBody ItemDto itemDto) {
+        return itemService.createItem(itemDto, ownerId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDto> getItemById(@PathVariable Long id,
-                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return ResponseEntity.ok(itemService.getItemById(id, userId));
+    public ItemDto getItemById(@PathVariable Long id,
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItemById(id, userId);
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        return ResponseEntity.ok(itemService.getItemsByOwner(ownerId));
+    public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        return itemService.getItemsByOwner(ownerId);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> searchItems(@RequestParam String text) {
-        return ResponseEntity.ok(itemService.searchItems(text));
+    public List<ItemDto> searchItems(@RequestParam String text) {
+        return itemService.searchItems(text);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ItemDto> updateItem(@PathVariable Long id,
-                                              @RequestBody ItemDto itemDto,
-                                              @RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        return ResponseEntity.ok(itemService.updateItem(id, itemDto, ownerId));
+    public ItemDto updateItem(@PathVariable Long id,
+                              @RequestBody ItemDto itemDto,
+                              @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+        return itemService.updateItem(id, itemDto, ownerId);
     }
 
     @DeleteMapping("/{id}")
@@ -51,9 +51,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<CommentDto> addComment(@PathVariable Long itemId,
-                                                 @RequestHeader("X-Sharer-User-Id") Long userId,
-                                                 @RequestBody CommentDto commentDto) {
-        return ResponseEntity.ok(itemService.addComment(itemId, userId, commentDto.getText()));
+    public CommentDto addComment(@PathVariable Long itemId,
+                                 @RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @RequestBody CommentDto commentDto) {
+        return itemService.addComment(itemId, userId, commentDto.getText());
     }
 }

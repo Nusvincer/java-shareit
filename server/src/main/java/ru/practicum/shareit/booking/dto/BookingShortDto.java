@@ -12,4 +12,7 @@ public class BookingShortDto {
     private Long bookerId;
     private LocalDateTime start;
     private LocalDateTime end;
+
+    public BookingShortDto() {
+    }
 }
