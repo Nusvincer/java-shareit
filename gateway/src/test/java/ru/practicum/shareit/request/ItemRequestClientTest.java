@@ -12,6 +12,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -88,6 +89,24 @@ class ItemRequestClientTest {
                 .andRespond(withSuccess("[]", MediaType.APPLICATION_JSON));
 
         ResponseEntity<Object> response = itemRequestClient.getRequestsOfOtherUsers(USER_ID);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        server.verify();
+    }
+
+    @Test
+    void getRequestsOfOtherUsers_withPagination_shouldReturnList() {
+        int from = 0;
+        int size = 10;
+
+        server.expect(requestTo(containsString(BASE_URL + "/all")))
+                .andExpect(requestTo(containsString("from=" + from)))
+                .andExpect(requestTo(containsString("size=" + size)))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("X-Sharer-User-Id", String.valueOf(USER_ID)))
+                .andRespond(withSuccess("[]", MediaType.APPLICATION_JSON));
+
+        ResponseEntity<Object> response = itemRequestClient.getRequestsOfOtherUsers(USER_ID, from, size);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         server.verify();

@@ -79,4 +79,34 @@ class BookingClientTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         server.verify();
     }
+
+    @Test
+    void getBookingsByUser_shouldReturnList() {
+        String state = "ALL";
+
+        server.expect(requestTo(BASE_URL + "?state=" + state))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("X-Sharer-User-Id", String.valueOf(USER_ID)))
+                .andRespond(withSuccess("[]", MediaType.APPLICATION_JSON));
+
+        ResponseEntity<Object> response = bookingClient.getBookingsByUser(USER_ID, state);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        server.verify();
+    }
+
+    @Test
+    void getBookingsForOwnerItems_shouldReturnList() {
+        String state = "ALL";
+
+        server.expect(requestTo(BASE_URL + "/owner?state=" + state))
+                .andExpect(method(HttpMethod.GET))
+                .andExpect(header("X-Sharer-User-Id", String.valueOf(USER_ID)))
+                .andRespond(withSuccess("[]", MediaType.APPLICATION_JSON));
+
+        ResponseEntity<Object> response = bookingClient.getBookingsForOwnerItems(USER_ID, state);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        server.verify();
+    }
 }

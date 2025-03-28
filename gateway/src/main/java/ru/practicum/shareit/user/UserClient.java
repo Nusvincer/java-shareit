@@ -47,7 +47,11 @@ public class UserClient {
     }
 
     public ResponseEntity<Object> deleteUser(Long id) {
-        restTemplate.delete(serverUrl + "/" + id);
-        return ResponseEntity.noContent().build();
+        return restTemplate.exchange(
+                serverUrl + "/" + id,
+                HttpMethod.DELETE,
+                null,
+                Object.class
+        );
     }
 }

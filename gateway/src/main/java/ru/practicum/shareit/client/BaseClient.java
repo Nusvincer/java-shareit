@@ -70,11 +70,10 @@ public class BaseClient {
     protected ResponseEntity<Object> get(String path, long userId, Map<String, Object> params) {
         try {
             return rest.exchange(
-                    path,
+                    path + buildQueryString(params),
                     HttpMethod.GET,
                     new HttpEntity<>(defaultHeaders(userId)),
-                    Object.class,
-                    params
+                    Object.class
             );
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
@@ -92,6 +91,20 @@ public class BaseClient {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
+    }
+
+    private String buildQueryString(Map<String, Object> params) {
+        if (params.isEmpty()) {
+            return "";
+        }
+        StringBuilder query = new StringBuilder("?");
+        params.forEach((key, value) -> {
+            if (query.length() > 1) {
+                query.append("&");
+            }
+            query.append(key).append("=").append(value);
+        });
+        return query.toString();
     }
 
     private HttpHeaders defaultHeaders(long userId) {

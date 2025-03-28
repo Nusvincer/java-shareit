@@ -8,6 +8,8 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
+import java.util.Map;
+
 @Component
 public class ItemRequestClient extends BaseClient {
 
@@ -35,5 +37,13 @@ public class ItemRequestClient extends BaseClient {
 
     public ResponseEntity<Object> getRequestsOfOtherUsers(Long userId) {
         return get("/all", userId);
+    }
+
+    public ResponseEntity<Object> getRequestsOfOtherUsers(Long userId, Integer from, Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "from", from,
+                "size", size
+        );
+        return get("/all", userId, parameters);
     }
 }
