@@ -31,7 +31,8 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getRequestsOfOtherUsers(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemRequestClient.getRequestsOfOtherUsers(userId);
+    public ResponseEntity<Object> getRequestsOfOtherUsers(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                          @RequestParam Integer from, @RequestParam Integer size) {
+        return itemRequestClient.getRequestsOfOtherUsers(userId, from, size);
     }
 }
