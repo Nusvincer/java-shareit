@@ -30,15 +30,19 @@ class BaseClientTest {
     void shouldSendGetRequestWithParams() {
         ResponseEntity<Object> mockResponse = ResponseEntity.ok("result");
 
+        Map<String, Object> params = Map.of("from", 0, "size", 5);
+
+        String expectedUrl = "/items?from=0&size=5";
+
         when(restTemplate.exchange(
-                eq("/items?from=0&size=5"),
+                eq(expectedUrl),
                 eq(HttpMethod.GET),
                 any(HttpEntity.class),
                 eq(Object.class))
         ).thenReturn(mockResponse);
 
-        ResponseEntity<Object> response = baseClient.get("/items", 1L, Map.of("from", 0, "size", 5));
-
+        ResponseEntity<Object> response = baseClient.get("/items", 1L, params);
+        
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("result", response.getBody());
     }
