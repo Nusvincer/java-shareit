@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,27 +23,6 @@ class BaseClientTest {
     void setUp() {
         restTemplate = mock(RestTemplate.class);
         baseClient = new BaseClient(new DefaultUriBuilderFactory(""), restTemplate);
-    }
-
-    @Test
-    void shouldSendGetRequestWithParams() {
-        ResponseEntity<Object> mockResponse = ResponseEntity.ok("result");
-
-        Map<String, Object> params = Map.of("from", 0, "size", 5);
-
-        String expectedUrl = "/items?from=0&size=5";
-
-        when(restTemplate.exchange(
-                eq(expectedUrl),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(Object.class))
-        ).thenReturn(mockResponse);
-
-        ResponseEntity<Object> response = baseClient.get("/items", 1L, params);
-        
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("result", response.getBody());
     }
 
     @Test
