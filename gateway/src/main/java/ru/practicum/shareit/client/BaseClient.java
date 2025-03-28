@@ -23,6 +23,11 @@ public class BaseClient {
         this.rest.setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
     }
 
+    public BaseClient(DefaultUriBuilderFactory uriBuilderFactory, RestTemplate restTemplate) {
+        this.rest = restTemplate;
+        this.rest.setUriTemplateHandler(uriBuilderFactory);
+    }
+
     protected <T> ResponseEntity<Object> post(String path, long userId, T body) {
         try {
             return rest.exchange(
@@ -94,5 +99,9 @@ public class BaseClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-Sharer-User-Id", String.valueOf(userId));
         return headers;
+    }
+
+    protected RestTemplate getRestTemplate() {
+        return rest;
     }
 }
