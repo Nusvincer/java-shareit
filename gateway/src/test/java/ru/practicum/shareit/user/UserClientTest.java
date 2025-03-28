@@ -42,7 +42,6 @@ class UserClientTest {
                 .andRespond(withSuccess(json, MediaType.APPLICATION_JSON));
 
         ResponseEntity<Object> response = userClient.createUser(userDto);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         server.verify();
@@ -50,19 +49,14 @@ class UserClientTest {
 
     @Test
     void getAllUsers_shouldReturnList() throws Exception {
-        String jsonResponse = """
-        [
-            {"id":1,"name":"Алексей","email":"alex@example.com"},
-            {"id":2,"name":"Мария","email":"maria@example.com"}
-        ]
-        """;
+        String jsonResponse = "[{\"id\":1,\"name\":\"Алексей\",\"email\":\"alex@example.com\"}," +
+                "{\"id\":2,\"name\":\"Мария\",\"email\":\"maria@example.com\"}]";
 
         server.expect(requestTo("http://localhost:9090/users"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         ResponseEntity<Object> response = userClient.getAllUsers();
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         server.verify();
@@ -70,16 +64,13 @@ class UserClientTest {
 
     @Test
     void getUserById_shouldReturnUser() throws Exception {
-        String jsonResponse = """
-        {"id":1,"name":"Алексей","email":"alex@example.com"}
-        """;
+        String jsonResponse = "{\"id\":1,\"name\":\"Алексей\",\"email\":\"alex@example.com\"}";
 
         server.expect(requestTo("http://localhost:9090/users/1"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         ResponseEntity<Object> response = userClient.getUserById(1L);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         server.verify();
@@ -89,10 +80,7 @@ class UserClientTest {
     void updateUser_shouldSendPatchRequest() throws Exception {
         UserDto userDto = new UserDto(null, "Алексей обновлённый", "alex-upd@example.com");
         String jsonRequest = objectMapper.writeValueAsString(userDto);
-
-        String jsonResponse = """
-        {"id":1,"name":"Алексей обновлённый","email":"alex-upd@example.com"}
-        """;
+        String jsonResponse = "{\"id\":1,\"name\":\"Алексей обновлённый\",\"email\":\"alex-upd@example.com\"}";
 
         server.expect(requestTo("http://localhost:9090/users/1"))
                 .andExpect(method(HttpMethod.PATCH))
@@ -100,7 +88,6 @@ class UserClientTest {
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         ResponseEntity<Object> response = userClient.updateUser(1L, userDto);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         server.verify();
@@ -113,7 +100,6 @@ class UserClientTest {
                 .andRespond(withSuccess());
 
         ResponseEntity<Object> response = userClient.deleteUser(1L);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         server.verify();
     }
